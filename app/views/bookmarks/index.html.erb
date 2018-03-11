@@ -1,92 +1,38 @@
 <div class="page-header">
-  <h1>
-    Bookmarks
-    <a href="/bookmarks/new" class="btn btn-lg btn-success">New Bookmark</a>
-  </h1>
-</div><div class="row mb-1">
-  <div class="col-md-12">
-    <%= search_form_for @q, :class => "collapse", :id => "bookmarks_filters" do |f| %>
-      <p class="lead">Narrow results:</p>
-
-        <div class="form-group">
-    <%= f.label :notes_cont, "Notes contains" %>
-    <%= f.text_field :notes_cont, :class => "form-control", :placeholder => "Notes contains" %>
-  </div>
-
-<div class="form-group">
-          <%= f.label :created_at, "Created at" %>
-          <div class="row">
-            <div class='col-md-6 mb-1'>
-              <div class='input-group date' id='created_atgteqPicker'>
-                  <%= f.text_field :created_at_gteq, :class => "form-control", :placeholder => "Created at greater than or equal to" %>
-                  <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-              </div>
-            </div>
-
-            <div class='col-md-6'>
-              <div class='input-group date' id='created_atlteqPicker'>
-                  <%= f.text_field :created_at_lteq, :class => "form-control", :placeholder => "Created at less than or equal to" %>
-                  <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-              </div>
-            </div>
-          </div>
-      </div>
-      <script type="text/javascript">
-          $(function () {
-              $('#created_atgteqPicker').datetimepicker({
-                  format: 'YYYY-MM-DD hh:mm:SS'
-              });
-              $('#created_atlteqPicker').datetimepicker({
-                  useCurrent: false,
-                  format: 'YYYY-MM-DD hh:mm:SS'
-              });
-              $('#created_atgteqPicker').on("dp.change", function (e) {
-                  $('#created_atlteqPicker').data("DateTimePicker").minDate(e.date);
-              });
-              $('#created_atlteqPicker').on("dp.change", function (e) {
-                  $('#created_atgteqPicker').data("DateTimePicker").maxDate(e.date);
-              });
-          });
-      </script>
-
-        <div class="form-group">
-      <%= f.label :user_username_cont, "User username contains" %>
-      <%= f.text_field :user_username_cont, :class => "form-control", :placeholder => "User username contains" %>
-    </div>
-
-<div class="form-group">
-      <%= f.label :venue_name_cont, "Venue name contains" %>
-      <%= f.text_field :venue_name_cont, :class => "form-control", :placeholder => "Venue name contains" %>
-    </div>
-
-<div class="form-group">
-      <%= f.label :dish_name_cont, "Dish name contains" %>
-      <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Dish name contains" %>
-    </div>
-
-      <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
-
-      <a href="/bookmarks" class="btn btn-secondary btn-block mb-1">Clear filters</a>
-    <% end %>
-    <a class="btn btn-secondary btn-block mb-1" data-toggle="collapse" href="#bookmarks_filters">
-      Show Filters
-    </a>
-  </div>
+  
 </div>
 
-<div class="row">
-  <div class="col-md-12">
+<div class="row mb-1">
+  <div class="col-md-3">
+    <%= search_form_for @q, :class => "collapse", :id => "bookmarks_filters" do |f| %>
+      <p class="lead">Narrow results:</p>
+          
+
+    <div class="form-group">
+          <%= f.label :dish_name_cont, "Dish name contains" %>
+          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Dish name contains" %>
+        </div>
+        
+    <div class="form-group">
+          <%= f.label :dish_name_cont, "Cuisine" %>
+          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine name contains" %>
+        </div>
+    
+          <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
+    
+          <a href="/bookmarks" class="btn btn-secondary btn-block mb-1">Clear filters</a>
+        <% end %>
+        <a class="btn btn-secondary btn-block mb-1" data-toggle="collapse" href="#bookmarks_filters">
+          Show Filters
+        </a>
+    </div>
+
+  <div class="col-md-6">
     <table class="table table-striped table-hover">
       <tr>
-        <th>Dish</th>
-        <th>Venue</th>
-        <th>User</th>
-        <th>Notes</th>
-        <th>Actions</th>
+        <th>The very best...</th>
+        <th>is at...</th>
+        <th></th>
       </tr>
 
       <% @bookmarks.each do |bookmark| %>
@@ -103,27 +49,21 @@
             <a href="/venues/<%= bookmark.venue.id %>">
               <%= bookmark.venue.name %>
             </a>
+          <% else %>
+          <%= select_tag("venue_id", options_from_collection_for_select(Venue.order(:name), :id, :name), :class => "form-control") %>
           <% end %>
         </td>
         <td>
-          <% if bookmark.user.present? %>
-            <a href="/users/<%= bookmark.user.id %>">
-              <%= bookmark.user.username %>
-            </a>
-          <% end %>
-        </td>
-        <td><%= bookmark.notes %></td>
-        <td>
-          <a href="/bookmarks/<%= bookmark.id %>" class="btn btn-primary">Show</a>
-          
-          <% if current_user == bookmark.user %>
-            <a href="/bookmarks/<%= bookmark.id %>/edit" class="btn btn-warning">Edit</a>
-            <a href="/delete_bookmark/<%= bookmark.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+          <% if bookmark.dish.present? %>
+              <span class="badge badge-primary"><%= bookmark.dish.cuisine.name %></span>
           <% end %>
         </td>
       </tr>
       <% end %>
     </table>
-    <%= paginate @bookmarks, theme: 'twitter-bootstrap-4' %>
+  </div>
+  <div class = "col-md-3">
+      <a href="/venues/new" class="btn btn-md btn-success">Add a new venue</a>
   </div>
 </div>
+s
