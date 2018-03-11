@@ -1,5 +1,5 @@
 class BookmarksController < ApplicationController
-  before_action :current_user_must_be_bookmark_user, :only => [:edit, :update, :destroy]
+before_action :current_user_must_be_bookmark_user, :only => [:edit, :update, :destroy]
 
   def current_user_must_be_bookmark_user
     bookmark = Bookmark.find(params[:id])
@@ -11,7 +11,8 @@ class BookmarksController < ApplicationController
 
   def index
     @q = current_user.bookmarks.ransack(params[:q])
-      @bookmarks = @q.result(:distinct => true).includes(:user, :venue, :dish).page(params[:page]).per(10)
+      @bookmarks = @q.result(:distinct => true).includes(:user, :venue, :dish).page(params[:page])
+      @dishes = Dish.all
 
     render("bookmarks/index.html.erb")
   end

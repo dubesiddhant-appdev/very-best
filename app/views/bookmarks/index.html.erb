@@ -9,13 +9,13 @@
           
 
     <div class="form-group">
-          <%= f.label :dish_name_cont, "Dish name contains" %>
-          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Dish name contains" %>
+          <%= f.label :dish_name_cont, "Name contains" %>
+          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Name contains" %>
         </div>
         
     <div class="form-group">
           <%= f.label :dish_name_cont, "Cuisine" %>
-          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine name contains" %>
+          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine" %>
         </div>
     
           <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
@@ -34,36 +34,63 @@
         <th>is at...</th>
         <th></th>
       </tr>
+      
+      <% @dishes.each do |dish| %>
+        <% counter = 1 %>
+        <tr>
+            <td>
+              <% if dish.present? %>
+                <a href="/dishes/<%= dish.id %>">
+                  <%= dish.name %>
+                </a>
+              <% end %>
+            </td>
+  
+          <% @bookmarks.each do |bookmark| %>
+            <% if bookmark.dish.id == dish.id %>
+            <td>
+                <a href="/venues/<%= bookmark.venue.id %>">
+                  <%= bookmark.venue.name %>
+                </a>
+            </td>
+            <td>
+                  <span class="badge badge-primary"><%= bookmark.dish.cuisine.name %></span>
+                  <% counter = 0 %>
+            </td>
+            <% end %>
+          <% end %>
+          
+          <% if counter == 1 %>
+            <td>
+                <form action="/create_bookmark" method="post">
+                  <!-- Hidden input for authenticity token to protect from forgery -->
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+            
+                  <!-- Label and input for dish_id -->
+                 <input type="hidden" name="dish_id" value="<%= dish.id %>">
+            
+                  <!-- Label and input for venue_id -->
 
-      <% @bookmarks.each do |bookmark| %>
-      <tr>
-        <td>
-          <% if bookmark.dish.present? %>
-            <a href="/dishes/<%= bookmark.dish.id %>">
-              <%= bookmark.dish.name %>
-            </a>
+                    <%= select_tag("venue_id", options_from_collection_for_select(Venue.order(:name), :id, :name), :class => "inline", :prompt => "Choose a venue...") %>
+                    
+                    <button class="btn btn-md btn-primary btn-sm">
+                      <i class="fas fa-heart"></i>
+                    </button>
+            
+                  <!-- Label and input for user_id -->
+                  <input type="hidden" name="user_id" value="<%= current_user.id %>">
+                </form>
+            </td>
+            <td>
+                  <span class="badge badge-primary"><%= dish.cuisine.name %></span>
+            </td>
           <% end %>
-        </td>
-        <td>
-          <% if bookmark.venue.present? %>
-            <a href="/venues/<%= bookmark.venue.id %>">
-              <%= bookmark.venue.name %>
-            </a>
-          <% else %>
-          <%= select_tag("venue_id", options_from_collection_for_select(Venue.order(:name), :id, :name), :class => "form-control") %>
-          <% end %>
-        </td>
-        <td>
-          <% if bookmark.dish.present? %>
-              <span class="badge badge-primary"><%= bookmark.dish.cuisine.name %></span>
-          <% end %>
-        </td>
-      </tr>
-      <% end %>
+        </tr>
+    <%end%>  
     </table>
   </div>
   <div class = "col-md-3">
       <a href="/venues/new" class="btn btn-md btn-success">Add a new venue</a>
   </div>
 </div>
-s
+
