@@ -1,83 +1,97 @@
 class DishesController < ApplicationController
-  def index
-    @q = Dish.ransack(params[:q])
-    @dishes = @q.result(:distinct => true).includes(:cuisine, :bookmarks, :fans, :specialists).page(params[:page]).per(10)
+before_action :current_user_must_be_bookmark_user, :only => [:edit, :update, :destroy]
 
-    render("dishes/index.html.erb")
+  def current_user_must_be_bookmark_user
+    bookmark = Bookmark.find(params[:id])
+
+    unless current_user == bookmark.user
+      redirect_back :fallback_location => "/", :alert => "You are not authorized for that."
+    end
+  end
+
+  def index
+    @q = current_user.bookmarks.ransack(params[:q])
+      @bookmarks = @q.result(:distinct => true).includes(:user, :venue, :dish).page(params[:page])
+      @dishes = Dish.all
+
+    render("bookmarks/index.html.erb")
   end
 
   def show
-    @bookmark = Bookmark.new
-    @dish = Dish.find(params[:id])
+    @bookmark = Bookmark.find(params[:id])
 
-    render("dishes/show.html.erb")
+    render("bookmarks/show.html.erb")
   end
 
   def new
-    @dish = Dish.new
+    @bookmark = Bookmark.new
 
-    render("dishes/new.html.erb")
+    render("bookmarks/new.html.erb")
   end
 
   def create
-    @dish = Dish.new
+    @bookmark = Bookmark.new
 
-    @dish.name = params[:name]
-    @dish.cuisine_id = params[:cuisine_id]
+    @bookmark.dish_id = params[:dish_id]
+    @bookmark.venue_id = params[:venue_id]
+    @bookmark.user_id = params[:user_id]
+    @bookmark.notes = params[:notes]
 
-    save_status = @dish.save
+    save_status = @bookmark.save
 
     if save_status == true
       referer = URI(request.referer).path
 
       case referer
-      when "/dishes/new", "/create_dish"
-        redirect_to("/dishes")
+      when "/bookmarks/new", "/create_bookmark"
+        redirect_to("/bookmarks")
       else
-        redirect_back(:fallback_location => "/", :notice => "Dish created successfully.")
+        redirect_back(:fallback_location => "/", :notice => "Bookmark created successfully.")
       end
     else
-      render("dishes/new.html.erb")
+      render("bookmarks/new.html.erb")
     end
   end
 
   def edit
-    @dish = Dish.find(params[:id])
+    @bookmark = Bookmark.find(params[:id])
 
-    render("dishes/edit.html.erb")
+    render("bookmarks/edit.html.erb")
   end
 
   def update
-    @dish = Dish.find(params[:id])
+    @bookmark = Bookmark.find(params[:id])
 
-    @dish.name = params[:name]
-    @dish.cuisine_id = params[:cuisine_id]
+    @bookmark.dish_id = params[:dish_id]
+    @bookmark.venue_id = params[:venue_id]
+    @bookmark.user_id = params[:user_id]
+    @bookmark.notes = params[:notes]
 
-    save_status = @dish.save
+    save_status = @bookmark.save
 
     if save_status == true
       referer = URI(request.referer).path
 
       case referer
-      when "/dishes/#{@dish.id}/edit", "/update_dish"
-        redirect_to("/dishes/#{@dish.id}", :notice => "Dish updated successfully.")
+      when "/bookmarks/#{@bookmark.id}/edit", "/update_bookmark"
+        redirect_to("/bookmarks/#{@bookmark.id}", :notice => "Bookmark updated successfully.")
       else
-        redirect_back(:fallback_location => "/", :notice => "Dish updated successfully.")
+        redirect_back(:fallback_location => "/", :notice => "Bookmark updated successfully.")
       end
     else
-      render("dishes/edit.html.erb")
+      render("bookmarks/edit.html.erb")
     end
   end
 
   def destroy
-    @dish = Dish.find(params[:id])
+    @bookmark = Bookmark.find(params[:id])
 
-    @dish.destroy
+    @bookmark.destroy
 
-    if URI(request.referer).path == "/dishes/#{@dish.id}"
-      redirect_to("/", :notice => "Dish deleted.")
+    if URI(request.referer).path == "/bookmarks/#{@bookmark.id}"
+      redirect_to("/", :notice => "Bookmark deleted.")
     else
-      redirect_back(:fallback_location => "/", :notice => "Dish deleted.")
+      redirect_back(:fallback_location => "/", :notice => "Bookmark deleted.")
     end
   end
 end
