@@ -1,10 +1,13 @@
-<div class="page-header">
-  <h1>
-    Venues 
-    <a href="/venues/new" class="btn btn-lg btn-success">New Venue</a>
-  </h1>
-</div><div class="row mb-1">
-  <div class="col-md-12">
+<!--<div class="page-header">-->
+<!--  <h1>-->
+<!--    Venues -->
+<!--    <a href="/venues/new" class="btn btn-lg btn-success">New Venue</a>-->
+<!--  </h1>-->
+<!--</div>-->
+<div class="container mt-4">
+  
+<div class="row mt-2 mb-1">
+  <div class="col-md-3">
     <%= search_form_for @q, :class => "collapse", :id => "venues_filters" do |f| %>
       <p class="lead">Narrow results:</p>
 
@@ -13,28 +16,29 @@
     <%= f.text_field :name_cont, :class => "form-control", :placeholder => "Name contains" %>
   </div>
 
-<div class="form-group">
-          <%= f.label :created_at, "Created at" %>
-          <div class="row">
-            <div class='col-md-6 mb-1'>
-              <div class='input-group date' id='created_atgteqPicker'>
-                  <%= f.text_field :created_at_gteq, :class => "form-control", :placeholder => "Created at greater than or equal to" %>
-                  <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-              </div>
-            </div>
+<!--<div class="form-group">-->
+<!--          <%= f.label :created_at, "Created at" %>-->
+<!--          <div class="row">-->
+<!--            <div class='col-md-6 mb-1'>-->
+<!--              <div class='input-group date' id='created_atgteqPicker'>-->
+<!--                  <%= f.text_field :created_at_gteq, :class => "form-control", :placeholder => "Created at greater than or equal to" %>-->
+<!--                  <span class="input-group-addon">-->
+<!--                      <span class="glyphicon glyphicon-calendar"></span>-->
+<!--                  </span>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class='col-md-6'>
-              <div class='input-group date' id='created_atlteqPicker'>
-                  <%= f.text_field :created_at_lteq, :class => "form-control", :placeholder => "Created at less than or equal to" %>
-                  <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-              </div>
-            </div>
-          </div>
-      </div>
+<!--            <div class='col-md-6'>-->
+<!--              <div class='input-group date' id='created_atlteqPicker'>-->
+<!--                  <%= f.text_field :created_at_lteq, :class => "form-control", :placeholder => "Created at less than or equal to" %>-->
+<!--                  <span class="input-group-addon">-->
+<!--                      <span class="glyphicon glyphicon-calendar"></span>-->
+<!--                  </span>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--      </div>-->
+   
       <script type="text/javascript">
           $(function () {
               $('#created_atgteqPicker').datetimepicker({
@@ -54,8 +58,8 @@
       </script>
 
         <div class="form-group">
-      <%= f.label :bookmarks_notes_cont, "Bookmark notes contains" %>
-      <%= f.text_field :bookmarks_notes_cont, :class => "form-control", :placeholder => "Bookmark notes contains" %>
+      <%= f.label :bookmarks_notes_cont, "Bookmarked dish names contains" %>
+      <%= f.text_field :bookmarks_notes_cont, :class => "form-control", :placeholder => "Bookmarked dish names contains" %>
     </div>
 
 <div class="form-group">
@@ -63,15 +67,15 @@
       <%= f.text_field :neighborhood_name_cont, :class => "form-control", :placeholder => "Neighborhood name contains" %>
     </div>
 
-<div class="form-group">
-      <%= f.label :fans_username_cont, "User username contains" %>
-      <%= f.text_field :fans_username_cont, :class => "form-control", :placeholder => "User username contains" %>
-    </div>
+<!--<div class="form-group">-->
+<!--      <%= f.label :fans_username_cont, "User username contains" %>-->
+<!--      <%= f.text_field :fans_username_cont, :class => "form-control", :placeholder => "User username contains" %>-->
+<!--    </div>-->
 
-<div class="form-group">
-      <%= f.label :specialties_name_cont, "Dish name contains" %>
-      <%= f.text_field :specialties_name_cont, :class => "form-control", :placeholder => "Dish name contains" %>
-    </div>
+<!--<div class="form-group">-->
+<!--      <%= f.label :specialties_name_cont, "Dish name contains" %>-->
+<!--      <%= f.text_field :specialties_name_cont, :class => "form-control", :placeholder => "Dish name contains" %>-->
+<!--    </div>-->
 
       <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
 
@@ -81,48 +85,89 @@
       Show Filters
     </a>
   </div>
-</div>
 
 
-<div class="row m-b-2">
-  <div class="col-md-12">
-    <div>
-      <div id="location_map" style="height: 480px;"></div>
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">
+          Places you've bookmarked
+        </h4>
+      </div>
+      
+      <div class="card-body">
+        
+        <div id="location_map" style="height: 360px; position: relative; overflow: hidden;"></div>  
+        
+      </div>
+      
+      <ul class="list-group list-group-flush">
+        
+        <% @venues.each do |venue| %>
+      <li class="list-group-item">
+        <a href="/venues/<%= venue.id %>"><%= venue.name %></a>
+        <small "text-muted float-right">
+          
+          <!--<% if venue.neighborhood.present? %>-->
+            
+              <%= venue.neighborhood.name %>
+      
+          <!--<% end %>-->
+          
+        </small>
+      </li>
+      <% end %>
+        
+      </ul>
+      
+      
+      
     </div>
   </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Neighborhood</th>
-        <th>Actions</th>
-      </tr>
-
-      <% @venues.each do |venue| %>
-      <tr>
-        <td><%= venue.name %></td>
-        <td><%= venue.address %></td>
-        <td>
-          <% if venue.neighborhood.present? %>
-            <a href="/neighborhoods/<%= venue.neighborhood.id %>">
-              <%= venue.neighborhood.name %>
-            </a>
-          <% end %>
-        </td>
-        <td>
-          <a href="/venues/<%= venue.id %>" class="btn btn-primary">Show</a>
-          <a href="/venues/<%= venue.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_venue/<%= venue.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-        </td>
-      </tr>
-      <% end %>
-    </table>
-    <%= paginate @venues, theme: 'twitter-bootstrap-4' %>
+  
+  <div class = "col-md-3">
+      <a href="/venues/new" class="btn btn-md btn-success">Add a new venue</a>
   </div>
+
+<!--<div class="row">-->
+<!--  <div class="col-md-6">-->
+<!--    <div class="card">-->
+    
+<!--    <table class="table table-striped table-hover">-->
+<!--      <tr>-->
+<!--        <th>Name</th>-->
+<!--        <th>Address</th>-->
+<!--        <th>Neighborhood</th>-->
+<!--        <th>Actions</th>-->
+<!--      </tr>-->
+
+<!--      <% @venues.each do |venue| %>-->
+<!--      <tr>-->
+<!--        <td><%= venue.name %></td>-->
+<!--        <td><%= venue.address %></td>-->
+<!--        <td>-->
+<!--          <% if venue.neighborhood.present? %>-->
+<!--            <a href="/neighborhoods/<%= venue.neighborhood.id %>">-->
+<!--              <%= venue.neighborhood.name %>-->
+<!--            </a>-->
+<!--          <% end %>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--          <a href="/venues/<%= venue.id %>" class="btn btn-primary">Show</a>-->
+<!--          <a href="/venues/<%= venue.id %>/edit" class="btn btn-warning">Edit</a>-->
+<!--          <a href="/delete_venue/<%= venue.id %>" class="btn btn-danger" rel="nofollow">Delete</a>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      <% end %>-->
+<!--    </table>-->
+<!--    <%= paginate @venues, theme: 'twitter-bootstrap-4' %>-->
+<!--  </div>  -->
+<!--  </div>-->
+<!--</div>-->
+
+
+
 </div>
 
 <script src="//maps.google.com/maps/api/js?v=3.24&key=AIzaSyCOTPWiuvyyo6sKoIBzKA4-1ol-vTOIOlM"></script>
