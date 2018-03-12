@@ -15,7 +15,18 @@
         
     <div class="form-group">
           <%= f.label :dish_name_cont, "Cuisine" %>
-          <%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine" %>
+          
+          <% @cuisines.each do |cuisine| %>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="q[cuisine_id_eq_any][]" id="q[cuisine_id_eq_any_">
+                  <%= cuisine.name %>
+              </label>
+            </div>
+          <% end %>
+          
+          
+          <!--<%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine" %>-->
         </div>
     
           <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
