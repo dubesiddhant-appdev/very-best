@@ -142,7 +142,7 @@
       <% @dish.specialists.each do |venue| %>
         <li class="list-group-item">
           <a href="/venues/<%= venue.id %>">
-            <%= venue.name %>
+           <p><%= venue.name %></p>
           </a>
           <div class="btn-group btn-group-xs float-right">
             <a href="/venues/<%= venue.id %>" class="btn btn-primary">
