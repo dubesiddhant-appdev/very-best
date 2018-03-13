@@ -11,8 +11,12 @@
   </div>
 
         <div class="form-group">
-      <%= f.label :cuisine_name_cont, "Cuisine name contains" %>
-      <%= f.text_field :cuisine_name_cont, :class => "form-control", :placeholder => "Cuisine name contains" %>
+        <%= f.label :cuisine_id_eq, "Cuisine" %>  
+          <% @cuisines.each do |cuisine| %>
+            <p></p>
+            <%= check_box_tag('q[cuisine_id_eq_any][]', cuisine.id ) %>
+            <%= cuisine.name %>
+            <% end %>
     </div>
 
       <%= f.submit :class => "btn btn-primary btn-block mb-1" %>

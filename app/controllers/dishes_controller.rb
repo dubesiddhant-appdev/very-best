@@ -4,6 +4,7 @@ class DishesController < ApplicationController
     @q = Dish.ransack(params[:q])
     @dishes = @q.result(:distinct => true).includes(:cuisine, :bookmarks, :fans, :specialists).page(params[:page])
     @bookmarks = Bookmark.all
+    @cuisines = Cuisine.all.sort_by(&:name)
 
     render("dishes/index.html.erb")
   end
