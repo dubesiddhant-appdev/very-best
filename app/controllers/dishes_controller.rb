@@ -1,28 +1,18 @@
 class DishesController < ApplicationController
-before_action :current_user_must_be_bookmark_user, :only => [:edit, :update, :destroy]
-
-  def current_user_must_be_bookmark_user
-    bookmark = Bookmark.find(params[:id])
-
-    unless current_user == bookmark.user
-      redirect_back :fallback_location => "/", :alert => "You are not authorized for that."
-    end
-  end
 
   def index
-    @q = current_user.bookmarks.ransack(params[:q])
-      @bookmarks = @q.result(:distinct => true).includes(:user, :venue, :dish).page(params[:page])
-      @dishes = Dish.all.sort_by(&:name)
-      @cuisines = Cuisine.all.sort_by(&:name)
+    @q = Dish.ransack(params[:q])
+    @dishes = @q.result(:distinct => true).includes(:cuisine, :bookmarks, :fans, :specialists).page(params[:page])
+    @bookmarks = Bookmark.all
 
-
-    render("bookmarks/index.html.erb")
+    render("dishes/index.html.erb")
   end
 
   def show
-    @bookmark = Bookmark.find(params[:id])
+      @bookmark = Bookmark.new
+      @dish = Dish.find(params[:id])
 
-    render("bookmarks/show.html.erb")
+    render("dishes/show.html.erb")
   end
 
   def new

@@ -12,19 +12,9 @@
         </div>
         
     <div class="form-group">
-          <%= f.label :dish_name_cont, "Cuisine" %>
+          <%= f.label :name_cont, "Cuisine" %>
           
-          <% @cuisines.each do |cuisine| %>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="q[cuisine_id_eq_any][]" id="q[cuisine_id_eq_any_">
-                  <%= cuisine.name %>
-              </label>
-            </div>
-          <% end %>
-          
-          
-          <!--<%= f.text_field :dish_name_cont, :class => "form-control", :placeholder => "Cuisine" %>-->
+          <!--<%= f.text_field :name_cont, :class => "form-control", :placeholder => "Cuisine" %>-->
         </div>
     
           <%= f.submit :class => "btn btn-primary btn-block mb-1" %>
@@ -56,7 +46,7 @@
             </td>
   
           <% @bookmarks.each do |bookmark| %>
-            <% if bookmark.dish.id == dish.id %>
+            <% if bookmark.dish.id == dish.id && bookmark.user_id == current_user.id %>
             <td>
                 <a href="/venues/<%= bookmark.venue.id %>">
                   <%= bookmark.venue.name %>
