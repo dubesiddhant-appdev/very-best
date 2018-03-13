@@ -12,7 +12,9 @@ before_action :current_user_must_be_bookmark_user, :only => [:edit, :update, :de
   def index
     @q = current_user.bookmarks.ransack(params[:q])
       @bookmarks = @q.result(:distinct => true).includes(:user, :venue, :dish).page(params[:page])
-      @dishes = Dish.all
+      @dishes = Dish.all.sort_by(&:name)
+      @cuisines = Cuisine.all.sort_by(&:name)
+
 
     render("bookmarks/index.html.erb")
   end
